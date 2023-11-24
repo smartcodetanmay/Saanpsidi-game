@@ -1,0 +1,73 @@
+import java.util.Scanner;
+import java.util.Random;
+
+public class SaapSidiGame {
+    private static final int BOARD_SIZE = 100;
+    private static final int[] SNAKES = {16, 47, 49, 56, 62, 64, 87, 93, 95, 98};
+    private static final int[] LADDERS = {1, 4, 9, 21, 28, 36, 51, 71, 80};
+
+    private int playerPosition;
+
+    public SaapSidiGame() {
+        playerPosition = 1;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        SaapSidiGame game = new SaapSidiGame();
+
+        System.out.println("Welcome to Saap Sidi Game!");
+
+        while (true) {
+            System.out.println("Current Position: " + game.getPlayerPosition());
+            System.out.print("Roll the dice (press enter): ");
+            scanner.nextLine();
+
+            int diceRoll = rollDice();
+            System.out.println("You rolled a " + diceRoll);
+
+            game.movePlayer(diceRoll);
+            game.checkSnakeAndLadder();
+
+            if (game.getPlayerPosition() == BOARD_SIZE) {
+                System.out.println("Congratulations! You won!");
+                break;
+            }
+        }
+
+        scanner.close();
+    }
+
+    private static int rollDice() {
+        Random random = new Random();
+        return random.nextInt(6) + 1;
+    }
+
+    private int getPlayerPosition() {
+        return playerPosition;
+    }
+
+    private void movePlayer(int steps) {
+        playerPosition += steps;
+        if (playerPosition > BOARD_SIZE) {
+            int exceedSteps = playerPosition - BOARD_SIZE;
+            playerPosition = BOARD_SIZE - exceedSteps;
+        }
+    }
+
+    private void checkSnakeAndLadder() {
+        for (int snake : SNAKES) {
+            if (playerPosition == snake) {
+                System.out.println("Oops! Snake at " + snake + ". Go down!");
+                playerPosition -= 5;
+            }
+        }
+
+        for (int ladder : LADDERS) {
+            if (playerPosition == ladder) {
+                System.out.println("Yay! Ladder at " + ladder + ". Climb up!");
+                playerPosition += 10;
+            }
+        }
+    }
+}
